@@ -1,0 +1,3 @@
+name: anAuth
+version: '${project.version}'
+main: pl.animekkk.anauth.AuthPlugin
