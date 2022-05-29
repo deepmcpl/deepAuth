@@ -17,32 +17,32 @@ import java.util.UUID;
 public class AuthUserManager {
 
     private final AuthPlugin plugin;
-    private final HashMap<UUID, AuthUser> authUsers = new HashMap<>();
-    private final Set<UUID> checkingUUIDs = new HashSet<>();
+    private final HashMap<String, AuthUser> authUsers = new HashMap<>();
+    private final Set<String> checkingNames = new HashSet<>();
 
     public AuthUserManager(AuthPlugin plugin) {
         this.plugin = plugin;
     }
 
-    public AuthUser getUser(UUID uuid) {
-        return this.authUsers.get(uuid);
+    public AuthUser getUser(String name) {
+        return this.authUsers.get(name);
     }
 
     public void addUser(AuthUser authUser) {
-        this.authUsers.put(authUser.getUuid(), authUser);
+        this.authUsers.put(authUser.getName(), authUser);
     }
 
-    public void createUser(UUID uuid) {
-        if(this.checkingUUIDs.contains(uuid)) return;
-        this.checkingUUIDs.add(uuid);
+    public void createUser(String name) {
+        if(this.checkingNames.contains(name)) return;
+        this.checkingNames.add(name);
         ProxyServer.getInstance().getScheduler().runAsync(this.plugin, () -> {
             try {
-                final URL url = new URL(PremiumHelper.HAS_PAID_URL.replace("%uuid%", uuid.toString()));
+                final URL url = new URL(PremiumHelper.HAS_PAID_URL.replace("%name%", name));
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setConnectTimeout(7500);
                 connection.connect();
 
-                AuthUser authUser = new AuthUser(uuid);
+                AuthUser authUser = new AuthUser(name);
                 if(connection.getResponseCode() == 200) {
                     authUser.setAccountType(AccountType.PREMIUM);
                 } else {
@@ -50,7 +50,7 @@ public class AuthUserManager {
                 }
                 authUser.setAuthInfo(new AuthInfo(System.currentTimeMillis(), System.currentTimeMillis()));
                 this.addUser(authUser);
-                this.checkingUUIDs.remove(uuid);
+                this.checkingNames.remove(name);
 
                 connection.disconnect();
             } catch (IOException e) {

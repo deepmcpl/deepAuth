@@ -21,4 +21,11 @@ public enum LoginType {
         this.onlyPremium = onlyPremium;
     }
 
+    public static LoginType getByCodeName(String code) {
+        for(LoginType loginType : LoginType.values()) {
+            if(loginType.getCode().equalsIgnoreCase(code)) return loginType;
+        }
+        return null;
+    }
+
 }

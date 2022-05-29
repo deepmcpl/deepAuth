@@ -12,11 +12,13 @@ import java.util.UUID;
 @Data
 public class AuthUser {
 
-    private final UUID uuid;
+    private final String name;
+    private UUID uuid;
 
     private AccountType accountType;
     private AuthState authState = AuthState.TO_REGISTER;
     private LoginType loginType;
+    private boolean isRegisterComplete = false;
 
     private byte[] password;
 
