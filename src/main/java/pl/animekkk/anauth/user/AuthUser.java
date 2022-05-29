@@ -7,10 +7,11 @@ import pl.animekkk.anauth.auth.AuthInfo;
 import pl.animekkk.anauth.auth.AuthState;
 import pl.animekkk.anauth.auth.LoginType;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 @Data
-public class AuthUser {
+public class AuthUser implements Serializable {
 
     private final String name;
     private UUID uuid;
@@ -23,8 +24,5 @@ public class AuthUser {
     private byte[] password;
 
     private AuthInfo authInfo;
-
-    private ProxiedPlayer player;
-
 
 }

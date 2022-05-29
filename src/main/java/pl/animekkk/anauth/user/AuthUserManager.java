@@ -5,6 +5,8 @@ import pl.animekkk.anauth.AuthPlugin;
 import pl.animekkk.anauth.auth.AccountType;
 import pl.animekkk.anauth.auth.AuthInfo;
 import pl.animekkk.anauth.user.helper.PremiumHelper;
+import pl.animekkk.anauth.user.helper.SerializeHelper;
+import redis.clients.jedis.JedisPooled;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -13,15 +15,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class AuthUserManager {
 
     private final AuthPlugin plugin;
+    private final JedisPooled jedis;
     private final HashMap<String, AuthUser> authUsers = new HashMap<>();
     private final Set<String> checkingNames = new HashSet<>();
 
-    public AuthUserManager(AuthPlugin plugin) {
+    public AuthUserManager(AuthPlugin plugin, JedisPooled jedis) {
         this.plugin = plugin;
+        this.jedis = jedis;
     }
 
     public AuthUser getUser(String name) {
@@ -57,6 +62,28 @@ public class AuthUserManager {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    public void saveUsers() {
+        this.authUsers.values().forEach(authUser -> {
+            try {
+                jedis.hset("anAuth", authUser.getName(), SerializeHelper.serialize(authUser));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        ProxyServer.getInstance().getLogger().log(Level.INFO, "Saved " + this.authUsers.size() + " users.");
+    }
+
+    public void loadUsers() {
+        jedis.hgetAll("anAuth").values().forEach(serialized -> {
+            try {
+                this.addUser((AuthUser) SerializeHelper.deserialize(serialized));
+            } catch (IOException | ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        ProxyServer.getInstance().getLogger().log(Level.INFO, "Loaded " + this.authUsers.size() + " users.");
     }
 
 }

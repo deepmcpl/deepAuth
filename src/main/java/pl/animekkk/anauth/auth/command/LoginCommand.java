@@ -34,6 +34,7 @@ public class LoginCommand extends Command {
             player.disconnect(ChatHelper.createFormattedText("&7Coś poszło nie tak.\nZgłoś tą sytuację do administracji.\n&c(Error 008)"));
             return;
         }
+        authUser.getAuthInfo().setLastJoinTime(System.currentTimeMillis());
         LoginType loginType = authUser.getLoginType();
         final String commandUsage = getUsage(loginType);
         if(loginType == LoginType.TFA) {

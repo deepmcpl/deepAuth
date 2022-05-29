@@ -10,25 +10,29 @@ import pl.animekkk.anauth.auth.listener.LoginTypeChangeListener;
 import pl.animekkk.anauth.user.AuthUserManager;
 import pl.animekkk.anauth.user.listener.PreLoginListener;
 import pl.animekkk.anauth.user.listener.PostLoginListener;
+import redis.clients.jedis.JedisPooled;
 
 public final class AuthPlugin extends Plugin {
 
     private AuthManager authManager;
     private AuthUserManager authUserManager;
+    private final JedisPooled jedis = new JedisPooled();
 
     @Override
     public void onEnable() {
         this.authManager = new AuthManager(this);
-        this.authUserManager = new AuthUserManager(this);
+        this.authUserManager = new AuthUserManager(this, jedis);
 
         final PluginManager pluginManager = this.getProxy().getPluginManager();
         registerListeners(pluginManager);
         registerCommands(pluginManager);
+
+        this.authUserManager.loadUsers();
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        this.authUserManager.saveUsers();
     }
 
     public void registerListeners(PluginManager pluginManager) {
@@ -41,7 +45,6 @@ public final class AuthPlugin extends Plugin {
         pluginManager.registerCommand(this, new LoginCommand(authUserManager));
         pluginManager.registerCommand(this, new RegisterCommand(authUserManager));
         pluginManager.registerCommand(this, new LoginTypeCommand(authUserManager));
-
     }
 
 }
