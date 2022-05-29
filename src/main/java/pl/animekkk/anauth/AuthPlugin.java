@@ -31,7 +31,7 @@ public final class AuthPlugin extends Plugin {
         registerListeners(pluginManager);
         registerCommands(pluginManager);
 
-        //this.authUserManager.loadUsers();
+        this.authUserManager.loadUsers();
     }
 
     @Override
