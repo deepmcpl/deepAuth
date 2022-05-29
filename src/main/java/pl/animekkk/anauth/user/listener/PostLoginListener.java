@@ -1,6 +1,7 @@
 package pl.animekkk.anauth.user.listener;
 
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -8,6 +9,7 @@ import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import pl.animekkk.anauth.auth.AccountType;
+import pl.animekkk.anauth.auth.AuthConfig;
 import pl.animekkk.anauth.auth.AuthState;
 import pl.animekkk.anauth.user.AuthUser;
 import pl.animekkk.anauth.user.AuthUserManager;
@@ -20,9 +22,11 @@ import java.util.List;
 public class PostLoginListener implements Listener {
 
     private final AuthUserManager authUserManager;
+    private final AuthConfig authConfig;
 
-    public PostLoginListener(AuthUserManager authUserManager) {
+    public PostLoginListener(AuthUserManager authUserManager, AuthConfig authConfig) {
         this.authUserManager = authUserManager;
+        this.authConfig = authConfig;
     }
 
     @EventHandler
@@ -42,8 +46,8 @@ public class PostLoginListener implements Listener {
             if(authUser.getAccountType() == AccountType.PREMIUM
                     && authUser.getLoginType() == LoginType.PREMIUM) {
                 authUser.setAuthState(AuthState.LOGGED);
-                //TODO Move to play server
-                ChatHelper.sendMessage(player, "&cDEBUG: Move to play server");
+                player.connect(authConfig.getSuccessLoginServer());
+                ChatHelper.clearChat(player);
             } else if(authUser.getLoginType() == LoginType.PASSWORD) {
                 ChatHelper.sendMessage(player, "&7Wpisz &3/login <hasło>&7, aby się zalogować.");
             } else if(authUser.getLoginType() == LoginType.TFA) {

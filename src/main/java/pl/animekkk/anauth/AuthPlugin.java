@@ -2,6 +2,7 @@ package pl.animekkk.anauth;
 
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.api.plugin.PluginManager;
+import pl.animekkk.anauth.auth.AuthConfig;
 import pl.animekkk.anauth.auth.AuthManager;
 import pl.animekkk.anauth.auth.command.LoginCommand;
 import pl.animekkk.anauth.auth.command.LoginTypeCommand;
@@ -17,18 +18,20 @@ public final class AuthPlugin extends Plugin {
 
     private AuthManager authManager;
     private AuthUserManager authUserManager;
+    private AuthConfig authConfig;
     private final JedisPooled jedis = new JedisPooled();
 
     @Override
     public void onEnable() {
         this.authManager = new AuthManager(this);
         this.authUserManager = new AuthUserManager(this, jedis);
+        this.authConfig = new AuthConfig(this);
 
         final PluginManager pluginManager = this.getProxy().getPluginManager();
         registerListeners(pluginManager);
         registerCommands(pluginManager);
 
-        this.authUserManager.loadUsers();
+        //this.authUserManager.loadUsers();
     }
 
     @Override
@@ -37,15 +40,15 @@ public final class AuthPlugin extends Plugin {
     }
 
     public void registerListeners(PluginManager pluginManager) {
-        pluginManager.registerListener(this, new PostLoginListener(authUserManager));
+        pluginManager.registerListener(this, new PostLoginListener(authUserManager, authConfig));
         pluginManager.registerListener(this, new PreLoginListener(authUserManager));
-        pluginManager.registerListener(this, new LoginTypeChangeListener(authManager));
+        pluginManager.registerListener(this, new LoginTypeChangeListener(authManager, authConfig));
         pluginManager.registerListener(this, new ChatListener(authUserManager));
     }
 
     public void registerCommands(PluginManager pluginManager) {
-        pluginManager.registerCommand(this, new LoginCommand(authUserManager));
-        pluginManager.registerCommand(this, new RegisterCommand(authUserManager));
+        pluginManager.registerCommand(this, new LoginCommand(authUserManager, authConfig));
+        pluginManager.registerCommand(this, new RegisterCommand(authUserManager, authConfig));
         pluginManager.registerCommand(this, new LoginTypeCommand(authUserManager));
     }
 

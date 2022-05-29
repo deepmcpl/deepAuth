@@ -4,6 +4,7 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import org.apache.commons.codec.digest.DigestUtils;
+import pl.animekkk.anauth.auth.AuthConfig;
 import pl.animekkk.anauth.auth.AuthState;
 import pl.animekkk.anauth.auth.LoginType;
 import pl.animekkk.anauth.user.AuthUser;
@@ -16,10 +17,12 @@ import java.util.Arrays;
 public class LoginCommand extends Command {
 
     private final AuthUserManager authUserManager;
+    private final AuthConfig authConfig;
 
-    public LoginCommand(AuthUserManager authUserManager) {
+    public LoginCommand(AuthUserManager authUserManager, AuthConfig authConfig) {
         super("login");
         this.authUserManager = authUserManager;
+        this.authConfig = authConfig;
     }
 
     @Override
@@ -48,8 +51,8 @@ public class LoginCommand extends Command {
             }
             ChatHelper.sendMessage(player, "&7Poprawnie zalogowałeś się na swoje konto!");
             authUser.setAuthState(AuthState.LOGGED);
-            //TODO Move to play server
-            ChatHelper.sendMessage(player, "&cDEBUG: Move to play server");
+            player.connect(authConfig.getSuccessLoginServer());
+            ChatHelper.clearChat(player);
         } else if(loginType == LoginType.PASSWORD) {
             if(args.length != 1) {
                 ChatHelper.sendMessage(player, "&7Niepoprawne użycie komendy. &3(%usage%)".replace("%usage%", commandUsage));
@@ -62,8 +65,8 @@ public class LoginCommand extends Command {
             }
             ChatHelper.sendMessage(player, "&7Poprawnie zalogowałeś się na swoje konto!");
             authUser.setAuthState(AuthState.LOGGED);
-            //TODO Move to play server
-            ChatHelper.sendMessage(player, "&cDEBUG: Move to play server");
+            player.connect(authConfig.getSuccessLoginServer());
+            ChatHelper.clearChat(player);
         } else {
             ChatHelper.sendMessage(player, "&7Nie możesz użyć tej komendy.");
         }
