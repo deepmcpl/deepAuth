@@ -8,6 +8,7 @@ import pl.animekkk.anauth.auth.command.LoginTypeCommand;
 import pl.animekkk.anauth.auth.command.RegisterCommand;
 import pl.animekkk.anauth.auth.listener.LoginTypeChangeListener;
 import pl.animekkk.anauth.user.AuthUserManager;
+import pl.animekkk.anauth.user.listener.ChatListener;
 import pl.animekkk.anauth.user.listener.PreLoginListener;
 import pl.animekkk.anauth.user.listener.PostLoginListener;
 import redis.clients.jedis.JedisPooled;
@@ -39,6 +40,7 @@ public final class AuthPlugin extends Plugin {
         pluginManager.registerListener(this, new PostLoginListener(authUserManager));
         pluginManager.registerListener(this, new PreLoginListener(authUserManager));
         pluginManager.registerListener(this, new LoginTypeChangeListener(authManager));
+        pluginManager.registerListener(this, new ChatListener(authUserManager));
     }
 
     public void registerCommands(PluginManager pluginManager) {

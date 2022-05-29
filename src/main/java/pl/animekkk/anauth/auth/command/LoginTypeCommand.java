@@ -41,7 +41,7 @@ public class LoginTypeCommand extends Command {
             return;
         }
         if(authUser.getLoginType() != null) {
-            //TOPO Allow user to change login type
+            //TODO Allow user to change login type
             ChatHelper.sendMessage(player, "&7Nie możesz użyć tej komendy.");
             return;
         }
