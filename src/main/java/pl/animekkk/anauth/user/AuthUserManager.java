@@ -11,10 +11,7 @@ import redis.clients.jedis.JedisPooled;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.logging.Level;
 
 public class AuthUserManager {
@@ -84,6 +81,10 @@ public class AuthUserManager {
             }
         });
         ProxyServer.getInstance().getLogger().log(Level.INFO, "Loaded " + this.authUsers.size() + " users.");
+    }
+
+    public Collection<AuthUser> getUsers() {
+        return this.authUsers.values();
     }
 
 }

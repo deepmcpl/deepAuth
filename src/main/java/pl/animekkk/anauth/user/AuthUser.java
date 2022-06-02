@@ -25,4 +25,21 @@ public class AuthUser implements Serializable {
 
     private AuthInfo authInfo;
 
+    private transient ProxiedPlayer player;
+    private transient int sessionTime = 0;
+
+    public int addSessionTime(int sessionTime) {
+        this.sessionTime += sessionTime;
+        return this.sessionTime;
+    }
+
+    public int addSessionTime() {
+        this.addSessionTime(1);
+        return this.sessionTime;
+    }
+
+    public boolean isOnline() {
+        return this.player != null;
+    }
+
 }

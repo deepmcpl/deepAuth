@@ -1,6 +1,7 @@
 package pl.animekkk.anauth.user.helper;
 
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -32,6 +33,11 @@ public class ChatHelper {
 
     public static boolean sendMessage(CommandSender sender, String message) {
         sender.sendMessage(createFormattedText(message));
+        return true;
+    }
+
+    public static boolean sendActionBar(ProxiedPlayer player, String message) {
+        player.sendMessage(ChatMessageType.ACTION_BAR, createFormattedText(message));
         return true;
     }
 

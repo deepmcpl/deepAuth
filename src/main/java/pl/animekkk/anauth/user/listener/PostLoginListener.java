@@ -38,6 +38,8 @@ public class PostLoginListener implements Listener {
             player.disconnect(ChatHelper.createFormattedText("&7Coś poszło nie tak.\nZgłoś tą sytuację do administracji.\n&c(Error 002)"));
             return;
         }
+        authUser.setPlayer(player);
+        authUser.setSessionTime(0);
         if(authUser.getUuid() == null) authUser.setUuid(player.getUniqueId());
         if(!authUser.isRegisterComplete()) authUser.setLoginType(null);
         if(authUser.getAuthState() == AuthState.LOGGED) authUser.setAuthState(AuthState.TO_LOGIN);
