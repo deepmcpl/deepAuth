@@ -37,7 +37,7 @@ public final class AuthPlugin extends Plugin {
         registerCommands(pluginManager);
         registerTasks();
 
-        //this.authUserManager.loadUsers();
+        this.authUserManager.loadUsers();
     }
 
     @Override
